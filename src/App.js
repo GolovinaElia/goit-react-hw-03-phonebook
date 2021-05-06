@@ -3,13 +3,27 @@ import style from './App.module.css';
 import ContactForm from './components/ContactForm/ContactForm';
 import ContactList from './components/ContactList/ContactList';
 import Filter from './components/Filter/Filter';
-import contactArr from './contacts.json';
+import contactsArr from './contacts.json';
 
 class App extends Component {
   state = {
-    contacts: contactArr,
+    contacts: [...contactsArr],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContacts = data => {
     const { name } = data;
